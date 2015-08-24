@@ -66,28 +66,30 @@ namespace DinoCrawlerWebClient {
             return linksToFilter.Distinct().ToList();
         }
 
-        public IList<string> ExtractDinos(Uri originalUri, IList<string> filterdLinks) {
+        public IList<string> ExtractDinos(Uri originalUri, IList<string> links) {
             var foundDinos = new List<string>();
 
-            foreach (string filterdLink in filterdLinks) {
-                if (filterdLink.EndsWith(DinoImageTypePattern) &&
-                    filterdLink.Length >= 8) {
+            foreach (string link in links) {
+                if (link.EndsWith(DinoImageTypePattern) &&
+                    link.Contains(DinoImageFolderAndPrefixPattern) &&
+                    link.Length >= 8) {
 
-                    string numberOfImageFileAsString = 
-                        filterdLink.Substring(filterdLink.Length - (DinoImageTypePattern.Length + 2), 2);
+                    /*string numberOfImageFileAsString = 
+                        link.Substring(link.Length - (DinoImageTypePattern.Length + 2), 2);
 
                     int numberOfImageFile;
-                    Int32.TryParse(numberOfImageFileAsString, out numberOfImageFile);
+                    int.TryParse(numberOfImageFileAsString, out numberOfImageFile);
 
                     string dinoImageFolderAndPrefixSubstring = 
-                        filterdLink.Substring(filterdLink.Length - (DinoImageTypePattern.Length + 2 + DinoImageFolderAndPrefixPattern.Length), 2);
+                        link.Substring(link.Length - (DinoImageTypePattern.Length + 2 + DinoImageFolderAndPrefixPattern.Length), 2);
 
                     if (numberOfImageFile > 0 &&
                         numberOfImageFile < 100 &&
                         dinoImageFolderAndPrefixSubstring == DinoImageFolderAndPrefixPattern) {
-                        
-                        foundDinos.Add(filterdLink);
-                    }
+                      */  
+                        foundDinos.Add(link);
+                        Console.WriteLine("YEHAAAA!!! Dino found: {0}", link);
+                    //}
                 }
             }
 
