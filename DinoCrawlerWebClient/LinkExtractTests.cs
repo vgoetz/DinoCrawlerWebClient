@@ -11,6 +11,22 @@ namespace DinoCrawlerWebClient {
             _linkFinder = new LinkFinder();
         }
 
+        [TestCase("<a href='www.de/de/news/2015/dino-hunt.html'></a>", Result = 0)]
+        [TestCase("<a id='bla' href='http://www.da.de/de/news/2015/dino-hunt.html'></a>", Result = 0)]
+        public int TestSearchForRelativeLinksWithoutResults(string htmlContent) {
+            Console.WriteLine(@"Input: '{0}'", htmlContent);
+            var result = _linkFinder.GetAllLinks(htmlContent);
+            return (result.Count);
+        }
+
+        [TestCase("<a href='/de/news/2015/dino-hunt.html'></a>", Result = 1)]
+        [TestCase("<a id='bla' href='/de/news/2015/dino-hunt.html'></a>", Result = 1)]
+        public int TestSearchForRelativeLinks(string htmlContent) {
+            Console.WriteLine(@"Input: '{0}'", htmlContent);
+            var result = _linkFinder.GetAllLinks(htmlContent);
+            return (result.Count);
+        }
+
         [TestCase("", Result = 0)]
         [TestCase("aaaa", Result = 0)]
         [TestCase("aa aa", Result = 0)]

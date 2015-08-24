@@ -7,13 +7,21 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="567" Width="1087.699" BorderThickness="0" WindowStyle="ToolWindow">
     <Grid Background="#FFC0BCCF">
-        <TextBox x:Name="txtUri" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="http://stammtisch.azurewebsites.net/" 
+        <TextBox x:Name="txtUri" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="http://stammtisch.azurewebsites.net" 
                  VerticalAlignment="Top" Width="417" Margin="10,10,0,0">
             <TextBox.InputBindings>
                 <KeyBinding Command="{Binding Path=SearchCommand}" Key="Enter" />
             </TextBox.InputBindings>
         </TextBox>
         <Button x:Name="vtnCrawl" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="432,10,0,0" Click="vtnCrawl_Click">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                    <GradientStop Color="#FFF3F3F3" Offset="0"/>
+                    <GradientStop Color="#FFEBEBEB" Offset="0.5"/>
+                    <GradientStop Color="#FFDDDDDD" Offset="0.5"/>
+                    <GradientStop Color="#FFF0D8D8" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
             <!--//Command="SearchCommand" IsDefault="{Binding ElementName=txtUri, Path=IsKeyboardFocused}">-->
             Crawl!
         </Button>
@@ -27,7 +35,7 @@
         <ListBox x:Name="lsbFoundDinos" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="490" Margin="10,420,0,0"/>
         <Label x:Name="label1" Content="Gefundene Dinos!" HorizontalAlignment="Left" Margin="10,394,0,0" VerticalAlignment="Top"/>
         <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Margin="528,420,0,0" Stroke="Black" VerticalAlignment="Top" Width="100"/>
-        <Image x:Name="imgDinoPreview" HorizontalAlignment="Left" Height="74" Margin="539,433,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.563,0.542"/>
+        <Image x:Name="imgDinoPreview" HorizontalAlignment="Left" Height="54" Margin="539,443,0,0" VerticalAlignment="Top" Width="76" RenderTransformOrigin="0.563,0.542"/>
         <WebBrowser HorizontalAlignment="Left" Height="100" Margin="653,420,0,0" VerticalAlignment="Top" Width="404"/>
         <Label x:Name="lblPreview" Content="Preview" HorizontalAlignment="Left" Margin="528,394,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.105,0.615" Width="187"/>
         <Label x:Name="lblVisitedSites" Content="Besuchte Links" HorizontalAlignment="Left" Margin="528,10,0,0" VerticalAlignment="Top"/>
@@ -38,7 +46,7 @@
         <Label x:Name="lblAllLinksCounter" Content="?" HorizontalAlignment="Left" Margin="106,205,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,0.462"/>
         <Label x:Name="lblFoundDinosCounter" Content="?" HorizontalAlignment="Left" Margin="115,394,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,0.462"/>
         <Button x:Name="btnSetHeise" Content="heise" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="331,33,0,0" Click="btnSetHeise_Click"/>
-        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="432,37,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click" IsEnabled="False"/>
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="432,33,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click" IsEnabled="False"/>
         <Button x:Name="button" Content="devart example" HorizontalAlignment="Left" VerticalAlignment="Top" Width="114" Margin="212,33,0,0" Click="button_Click"/>
     </Grid>
 </Window>

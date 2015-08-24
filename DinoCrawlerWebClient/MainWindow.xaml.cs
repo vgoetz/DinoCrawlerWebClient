@@ -105,7 +105,7 @@ namespace DinoCrawlerWebClient {
         }
 
         private void btnSetStammtisch_Click(object sender, RoutedEventArgs e) {
-            txtUri.Text = "http://stammtisch.azurewebsites.net/";
+            txtUri.Text = "http://stammtisch.azurewebsites.net";
         }
 
         private void button_Click(object sender, RoutedEventArgs e) {

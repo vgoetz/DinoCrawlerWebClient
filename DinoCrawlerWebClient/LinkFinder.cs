@@ -8,7 +8,18 @@ namespace DinoCrawlerWebClient {
 
     public class LinkFinder {
 
-        private static readonly Regex LinkParser = new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", 
+        private static readonly string DevArtRootUri = "https://www.devart.com";
+
+        private static readonly Regex AbsoluteLinkParser = new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", 
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        //private static readonly Regex RelativeLinkParser = new Regex(@"<a\s*.*href=\S(/|.)*\S>\s*</a>",
+        //    RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex RelativeLinkParser1 = new Regex("\\shref=\"(/|.)*\">",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex RelativeLinkParser2 = new Regex("\\shref='(/|.)*'>",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex DinoHtmlImgSrcParser = new Regex(@"<img\s*src\s*=\s*\S/images/14082015/1-\d{2}.png\S\s*/>", 
@@ -26,15 +37,33 @@ namespace DinoCrawlerWebClient {
         public IList<string> GetAllLinks(string htmlContent) {
             var tokens = htmlContent
                 .Trim()
-                .Replace("\r", "")
-                .Replace("\n", "")
-                .Split(' ');
+                //.Replace("\r", "")
+                //.Replace("\n", "")
+                .Split('\n');
 
             List<string> list = new List<string>();
 
             foreach (string token in tokens) {
-                foreach (Match link in LinkParser.Matches(token)) {
+                foreach (Match link in AbsoluteLinkParser.Matches(token)) {
                     list.Add(link.Value);
+                }
+            }
+
+            foreach (string token in tokens) {
+                foreach (Match link in RelativeLinkParser1.Matches(token)) {
+
+                    var relativeLink = link.Value.Replace("href=", "").Replace("\"", "").Replace("'", "").Replace(">", "").Trim();
+
+                    if (!relativeLink.Contains("http://") &&
+                        !relativeLink.Contains("www.")) {
+                        var uriToBuild = DevArtRootUri + relativeLink;
+                        list.Add(uriToBuild);
+
+                    } else {
+                        list.Add(relativeLink);
+                    }
+
+
                 }
             }
             
@@ -89,7 +118,7 @@ namespace DinoCrawlerWebClient {
         }
 
         public Uri GetDinoUriFromHtmlImgSrc(string htmlImgSrc) {
-            var uriToBuild = "https://www.devart.com" + DinoImgSrcParser.Match(htmlImgSrc).Value;
+            var uriToBuild = DevArtRootUri + DinoImgSrcParser.Match(htmlImgSrc).Value;
 
             try {
                 return new Uri(uriToBuild);
