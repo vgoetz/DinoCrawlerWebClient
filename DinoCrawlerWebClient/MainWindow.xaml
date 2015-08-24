@@ -1,0 +1,43 @@
+﻿<Window x:Class="DinoCrawlerWebClient.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DinoCrawlerWebClient"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="567" Width="1087.699" BorderThickness="0" WindowStyle="ToolWindow">
+    <Grid Background="#FFC0BCCF">
+        <TextBox x:Name="txtUri" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="http://stammtisch.azurewebsites.net/" 
+                 VerticalAlignment="Top" Width="417" Margin="10,10,0,0">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding Path=SearchCommand}" Key="Enter" />
+            </TextBox.InputBindings>
+        </TextBox>
+        <Button x:Name="vtnCrawl" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="432,10,0,0" Click="vtnCrawl_Click">
+            <!--//Command="SearchCommand" IsDefault="{Binding ElementName=txtUri, Path=IsKeyboardFocused}">-->
+            Crawl!
+        </Button>
+        <TextBox x:Name="txtHtmlResult" HorizontalAlignment="Left" Height="101" TextWrapping="Wrap" VerticalAlignment="Top" Width="490" Margin="10,81,0,0" IsReadOnly="True" VerticalScrollBarVisibility="Auto"/>
+        <Label x:Name="lblHtmlResult" Content="HTML Result" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,55,0,0" RenderTransformOrigin="0.519,0.038"/>
+        <ListBox x:Name="lsbAllLinks" HorizontalAlignment="Left" Height="143" Margin="10,231,0,0" VerticalAlignment="Top" Width="490"/>
+        <Label x:Name="label" Content="Enthaltene Links&#xD;&#xA;" HorizontalAlignment="Left" Margin="10,205,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.447,0.154" Height="26"/>
+        <ListBox x:Name="lsbVisitedSites" HorizontalAlignment="Left" Height="146" VerticalAlignment="Top" Width="529" Margin="528,36,0,0"/>
+        <ListBox x:Name="lsbRelevantLinks" HorizontalAlignment="Left" Height="143" VerticalAlignment="Top" Width="529" Margin="528,231,0,0"/>
+        <Label x:Name="lblRelevantLinks" Content="Relevante Links" HorizontalAlignment="Left" Margin="528,205,0,0" VerticalAlignment="Top"/>
+        <ListBox x:Name="lsbFoundDinos" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="490" Margin="10,420,0,0"/>
+        <Label x:Name="label1" Content="Gefundene Dinos!" HorizontalAlignment="Left" Margin="10,394,0,0" VerticalAlignment="Top"/>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Left" Height="100" Margin="528,420,0,0" Stroke="Black" VerticalAlignment="Top" Width="100"/>
+        <Image x:Name="imgDinoPreview" HorizontalAlignment="Left" Height="74" Margin="539,433,0,0" VerticalAlignment="Top" Width="80" RenderTransformOrigin="0.563,0.542"/>
+        <WebBrowser HorizontalAlignment="Left" Height="100" Margin="653,420,0,0" VerticalAlignment="Top" Width="404"/>
+        <Label x:Name="lblPreview" Content="Preview" HorizontalAlignment="Left" Margin="528,394,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.105,0.615" Width="187"/>
+        <Label x:Name="lblVisitedSites" Content="Besuchte Links" HorizontalAlignment="Left" Margin="528,10,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnSetStammtisch" Content="Stammtisch" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="10,33,0,0" Click="btnSetStammtisch_Click"/>
+        <Button x:Name="btnSetDevart" Content="devart" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="111,33,0,0" Click="btnSetDevart_Click"/>
+        <Label x:Name="lblRelevantLinksCounter" Content="?" HorizontalAlignment="Left" Margin="619,205,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblVisitedSitesCounter" Content="?" HorizontalAlignment="Left" Margin="620,10,0,0" VerticalAlignment="Top"/>
+        <Label x:Name="lblAllLinksCounter" Content="?" HorizontalAlignment="Left" Margin="106,205,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,0.462"/>
+        <Label x:Name="lblFoundDinosCounter" Content="?" HorizontalAlignment="Left" Margin="115,394,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,0.462"/>
+        <Button x:Name="btnSetHeise" Content="heise" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="212,33,0,0" Click="btnSetHeise_Click"/>
+        <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="432,37,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click" IsEnabled="False"/>
+    </Grid>
+</Window>
