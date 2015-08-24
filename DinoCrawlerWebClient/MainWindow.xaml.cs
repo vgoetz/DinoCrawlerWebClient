@@ -21,6 +21,7 @@ namespace DinoCrawlerWebClient {
 
         private async void vtnCrawl_Click(object sender, RoutedEventArgs e) {
 
+            _visitedSites.Clear();
             _cancel = false;
             btnStop.IsEnabled = true;
 
@@ -32,7 +33,8 @@ namespace DinoCrawlerWebClient {
             lsbRelevantLinks.Items.Add(txtUri.Text);
 
             while (lsbRelevantLinks.Items.Count > 0 && !_cancel) {
-                await RunCrawler(lsbRelevantLinks.Items.GetItemAt(0).ToString());
+                var nextUri = lsbRelevantLinks.Items.GetItemAt(0).ToString();
+                await RunCrawler(nextUri);
             }
 
             _cancel = false;
@@ -40,9 +42,19 @@ namespace DinoCrawlerWebClient {
         }
 
         private async Task RunCrawler(string uriAsString) {
-            var uri = new Uri(uriAsString);
+            Uri uri;
+            try {
+                uri = new Uri(uriAsString);
+            } catch (Exception e) {
+                Console.WriteLine("Can´t convert '{0}' to a valid Uri: {1}", uriAsString, e.Message);
+                return;
+            }
 
             lsbRelevantLinks.Items.RemoveAt(0);
+
+            if (_visitedSites.Contains(uriAsString)) {
+                return;
+            }
 
             string htmlResult;
             try {
@@ -50,6 +62,8 @@ namespace DinoCrawlerWebClient {
                 htmlResult = await _webClient.DownloadStringTaskAsync(uri);
             } catch (WebException webEx) {
                 Console.WriteLine("Can´t crawl '{0}' because of {1}", uriAsString, webEx.Message);
+                return;
+            } catch (Exception) {
                 return;
             }
 
@@ -71,12 +85,17 @@ namespace DinoCrawlerWebClient {
             }
             lblRelevantLinksCounter.Content = lsbRelevantLinks.Items.Count;
 
-            IList<string> foundDinos = _linkFinder.ExtractDinos(uri, allLinks);
+            IList<string> foundDinos = _linkFinder.ExtractDinos(htmlResult);
             foreach (string foundDino in foundDinos) {
                 lsbFoundDinos.Items.Add(foundDino);
-                //string localFilename = "C:\\temp\\" + foundDino.Split('/').Last();
-                //_webClient.DownloadFile("http://www.example.com/image.jpg", localFilename);
-                imgDinoPreview.Source = new BitmapImage(new Uri(foundDino));
+
+                try {
+                    var imageUri = _linkFinder.GetDinoUriFromHtmlImgSrc(foundDino);
+                    imgDinoPreview.Source = new BitmapImage(imageUri);
+                } catch (Exception e) {
+                    Console.WriteLine("Can´t create BitmapImage from src-string'{0}': {1}", foundDino, e.Message);
+                    return;
+                }
             }
             lblFoundDinosCounter.Content = lsbFoundDinos.Items.Count;
         }
@@ -89,13 +108,21 @@ namespace DinoCrawlerWebClient {
             txtUri.Text = "http://stammtisch.azurewebsites.net/";
         }
 
+        private void button_Click(object sender, RoutedEventArgs e) {
+            txtUri.Text = "https://www.devart.com/news/2015/dino-hunt.html";
+        }
+
         private void btnSetHeise_Click(object sender, RoutedEventArgs e) {
             txtUri.Text = "http://www.heise.de/";
         }
+
+
 
         private void btnStop_Click(object sender, RoutedEventArgs e) {
             _cancel = true;
             btnStop.IsEnabled = false;
         }
+
+
     }
 }

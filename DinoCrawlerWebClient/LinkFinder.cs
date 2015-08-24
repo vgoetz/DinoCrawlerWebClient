@@ -2,19 +2,25 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Media.Imaging;
 
 namespace DinoCrawlerWebClient {
 
     public class LinkFinder {
 
-        private static readonly string DinoImageFolderAndPrefixPattern = "/images/14082015/1-";
-        private static readonly string DinoImageTypePattern = ".png";
-
         private static readonly Regex LinkParser = new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", 
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        private static readonly Regex DinoHtmlImgSrcParser = new Regex(@"<img\s*src\s*=\s*\S/images/14082015/1-\d{2}.png\S\s*/>", 
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex DinoImgSrcParser = new Regex(@"/images/14082015/1-\d{2}.png",
+            RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private static readonly IList<string> LinkTypesToIgnoreForVisit = new List<string> {
-            ".zip", ".txt", ".exe", ".rdf", ".xml", ".js", ".ico", ".png", ".jpg", ".jpeg", ".bmp", ".7z", ".7zip"
+            ".zip", ".txt", ".exe", ".rdf", ".xml", ".js", ".ico", ".png", ".jpg", ".jpeg", ".bmp",
+            ".7z", ".7zip", ".css"
+
         };
 
         public IList<string> GetAllLinks(string htmlContent) {
@@ -41,7 +47,7 @@ namespace DinoCrawlerWebClient {
             }
 
             var rootUriWithoutHttpPrefix = rootUri.Replace("http://www", "");
-            rootUriWithoutHttpPrefix.Replace("https://www", "");
+            rootUriWithoutHttpPrefix = rootUriWithoutHttpPrefix.Replace("https://www", "");
 
             IList<string> listToRemove = new List<string>();
             foreach (string link in linksToFilter) {
@@ -66,34 +72,32 @@ namespace DinoCrawlerWebClient {
             return linksToFilter.Distinct().ToList();
         }
 
-        public IList<string> ExtractDinos(Uri originalUri, IList<string> links) {
-            var foundDinos = new List<string>();
 
-            foreach (string link in links) {
-                if (link.EndsWith(DinoImageTypePattern) &&
-                    link.Contains(DinoImageFolderAndPrefixPattern) &&
-                    link.Length >= 8) {
+        public IList<string> ExtractDinos(string htmlContent) {
+            htmlContent = htmlContent
+                .Trim()
+                .Replace("\r", "")
+                .Replace("\n", "");
 
-                    string numberOfImageFileAsString = 
-                        link.Substring(link.Length - (DinoImageTypePattern.Length + 2), 2);
-
-                    int numberOfImageFile;
-                    int.TryParse(numberOfImageFileAsString, out numberOfImageFile);
-
-                    string dinoImageFolderAndPrefixSubstring = 
-                        link.Substring(link.Length - (DinoImageTypePattern.Length + 2 + DinoImageFolderAndPrefixPattern.Length), DinoImageFolderAndPrefixPattern.Length);
-
-                    if (numberOfImageFile > 0 &&
-                        numberOfImageFile < 100 &&
-                        dinoImageFolderAndPrefixSubstring == DinoImageFolderAndPrefixPattern) {
-                        
-                        foundDinos.Add(link);
-                        Console.WriteLine("YEHAAAA!!! Dino found: {0}", link);
-                    }
-                }
+            List<string> list = new List<string>();
+            
+            foreach (Match dinoMatch in DinoHtmlImgSrcParser.Matches(htmlContent)) {
+                list.Add(dinoMatch.Value);
             }
 
-            return foundDinos;
+            return list;
+        }
+
+        public Uri GetDinoUriFromHtmlImgSrc(string htmlImgSrc) {
+            var uriToBuild = "https://www.devart.com" + DinoImgSrcParser.Match(htmlImgSrc).Value;
+
+            try {
+                return new Uri(uriToBuild);
+            } catch (Exception e) {
+                Console.WriteLine("Can´t convert '{0}' to a valid Uri: {1}", uriToBuild, e.Message);
+                return null;
+            }
+            
         }
     }
 }

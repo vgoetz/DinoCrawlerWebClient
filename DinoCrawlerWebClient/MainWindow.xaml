@@ -37,7 +37,8 @@
         <Label x:Name="lblVisitedSitesCounter" Content="?" HorizontalAlignment="Left" Margin="620,10,0,0" VerticalAlignment="Top"/>
         <Label x:Name="lblAllLinksCounter" Content="?" HorizontalAlignment="Left" Margin="106,205,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,0.462"/>
         <Label x:Name="lblFoundDinosCounter" Content="?" HorizontalAlignment="Left" Margin="115,394,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.474,0.462"/>
-        <Button x:Name="btnSetHeise" Content="heise" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="212,33,0,0" Click="btnSetHeise_Click"/>
+        <Button x:Name="btnSetHeise" Content="heise" HorizontalAlignment="Left" VerticalAlignment="Top" Width="96" Margin="331,33,0,0" Click="btnSetHeise_Click"/>
         <Button x:Name="btnStop" Content="Stop" HorizontalAlignment="Left" Margin="432,37,0,0" VerticalAlignment="Top" Width="75" Click="btnStop_Click" IsEnabled="False"/>
+        <Button x:Name="button" Content="devart example" HorizontalAlignment="Left" VerticalAlignment="Top" Width="114" Margin="212,33,0,0" Click="button_Click"/>
     </Grid>
 </Window>
