@@ -74,22 +74,22 @@ namespace DinoCrawlerWebClient {
                     link.Contains(DinoImageFolderAndPrefixPattern) &&
                     link.Length >= 8) {
 
-                    /*string numberOfImageFileAsString = 
+                    string numberOfImageFileAsString = 
                         link.Substring(link.Length - (DinoImageTypePattern.Length + 2), 2);
 
                     int numberOfImageFile;
                     int.TryParse(numberOfImageFileAsString, out numberOfImageFile);
 
                     string dinoImageFolderAndPrefixSubstring = 
-                        link.Substring(link.Length - (DinoImageTypePattern.Length + 2 + DinoImageFolderAndPrefixPattern.Length), 2);
+                        link.Substring(link.Length - (DinoImageTypePattern.Length + 2 + DinoImageFolderAndPrefixPattern.Length), DinoImageFolderAndPrefixPattern.Length);
 
                     if (numberOfImageFile > 0 &&
                         numberOfImageFile < 100 &&
                         dinoImageFolderAndPrefixSubstring == DinoImageFolderAndPrefixPattern) {
-                      */  
+                        
                         foundDinos.Add(link);
                         Console.WriteLine("YEHAAAA!!! Dino found: {0}", link);
-                    //}
+                    }
                 }
             }
 

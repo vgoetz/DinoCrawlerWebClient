@@ -67,6 +67,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="DinoExtractTests.cs" />
     <Compile Include="LinkFilterTests.cs" />
     <Compile Include="LinkFinder.cs" />
     <Compile Include="LinkExtractTests.cs" />

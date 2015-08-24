@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace DinoCrawlerWebClient {
     
@@ -73,6 +74,9 @@ namespace DinoCrawlerWebClient {
             IList<string> foundDinos = _linkFinder.ExtractDinos(uri, allLinks);
             foreach (string foundDino in foundDinos) {
                 lsbFoundDinos.Items.Add(foundDino);
+                //string localFilename = "C:\\temp\\" + foundDino.Split('/').Last();
+                //_webClient.DownloadFile("http://www.example.com/image.jpg", localFilename);
+                imgDinoPreview.Source = new BitmapImage(new Uri(foundDino));
             }
             lblFoundDinosCounter.Content = lsbFoundDinos.Items.Count;
         }
