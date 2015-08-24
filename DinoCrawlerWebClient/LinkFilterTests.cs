@@ -17,7 +17,7 @@ namespace DinoCrawlerWebClient {
         public int TestLinkFilter_AcceptOnlyRootUri(string rootLink, string firstLink, string secondLink) {
             Console.WriteLine(@"Input: '{0}' '{1}'", firstLink, secondLink);
             IList<string> allLinks = new List<string> { firstLink, secondLink };
-            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string> { rootLink });
+            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string>(), rootLink);
             return (filterdLinks.Count);
         }
 
@@ -26,7 +26,7 @@ namespace DinoCrawlerWebClient {
         public int TestLinkFilter_DropDuplicates(string firstLink, string secondLink) {
             Console.WriteLine(@"Input: '{0}' '{1}'", firstLink, secondLink);
             IList<string> allLinks = new List<string> { firstLink, secondLink };
-            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string>(), false);
+            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string>(), firstLink, false);
             return (filterdLinks.Count);
         }
 
@@ -39,7 +39,7 @@ namespace DinoCrawlerWebClient {
         public int TestLinkFilter_KeepRelevantLinks(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
             IList<string> allLinks = _linkFinder.GetAllLinks(htmlContent);
-            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string>(), false);
+            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string>(), htmlContent, false);
             return (filterdLinks.Count);
         }
 
@@ -48,7 +48,7 @@ namespace DinoCrawlerWebClient {
         public int TestLinkFilter_IgnoreFiles(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
             IList<string> allLinks = _linkFinder.GetAllLinks(htmlContent);
-            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string>(), false);
+            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string>(), htmlContent, false);
             return (filterdLinks.Count);
         }
 
@@ -58,7 +58,7 @@ namespace DinoCrawlerWebClient {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
             Console.WriteLine(@"Visited site: '{0}'", visitedSite);
             IList<string> allLinks = _linkFinder.GetAllLinks(htmlContent);
-            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string> { visitedSite }, false);
+            var filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, new List<string> { visitedSite }, htmlContent, false);
             return (filterdLinks.Count);
         }
     }

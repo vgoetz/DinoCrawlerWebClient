@@ -13,8 +13,8 @@ namespace DinoCrawlerWebClient {
         private static readonly Regex LinkParser = new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", 
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly IList<string> LinkTypesToIgnore = new List<string> {
-            ".zip", ".txt", ".exe", ".rdf", ".xml", ".js", ".ico"
+        private static readonly IList<string> LinkTypesToIgnoreForVisit = new List<string> {
+            ".zip", ".txt", ".exe", ".rdf", ".xml", ".js", ".ico", ".png", ".jpg", ".jpeg", ".bmp", ".7z", ".7zip"
         };
 
         public IList<string> GetAllLinks(string htmlContent) {
@@ -35,30 +35,35 @@ namespace DinoCrawlerWebClient {
             return list;
         }
 
-        public IList<string> GetFilteredLinksToVisit(IList<string> linkList, IList<string> visitedLinks, bool onlyRootLinks = true) {
+        public IList<string> GetFilteredLinksToVisit(IList<string> linksToFilter, IList<string> visitedLinks, string rootUri, bool onlyRootLinks = true) {
             foreach (string visitedLink in visitedLinks) {
-                linkList.Remove(visitedLink);
+                linksToFilter.Remove(visitedLink);
             }
 
+            var rootUriWithoutHttpPrefix = rootUri.Replace("http://www", "");
+            rootUriWithoutHttpPrefix.Replace("https://www", "");
+
             IList<string> listToRemove = new List<string>();
-            foreach (string link in linkList) {
-                if (onlyRootLinks &&
-                    !link.StartsWith(visitedLinks[0])) {
-                    listToRemove.Add(link);
+            foreach (string link in linksToFilter) {
+                if (onlyRootLinks) {
+                    if (!link.Contains(rootUriWithoutHttpPrefix)) {
+                        listToRemove.Add(link);
+                    }
                 }
 
-                foreach (string ignoreMask in LinkTypesToIgnore) {
-                    if (link.EndsWith(ignoreMask)) {
+                foreach (string ignoreMask in LinkTypesToIgnoreForVisit) {
+                    if (!listToRemove.Contains(link) &&
+                        link.EndsWith(ignoreMask)) {
                         listToRemove.Add(link);
                     }
                 }
             }
 
             foreach (string s in listToRemove) {
-                linkList.Remove(s);
+                linksToFilter.Remove(s);
             }
 
-            return linkList.Distinct().ToList();
+            return linksToFilter.Distinct().ToList();
         }
 
         public IList<string> ExtractDinos(Uri originalUri, IList<string> filterdLinks) {

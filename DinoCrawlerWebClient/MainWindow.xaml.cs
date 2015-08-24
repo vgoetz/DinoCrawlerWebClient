@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
@@ -23,6 +24,10 @@ namespace DinoCrawlerWebClient {
             btnStop.IsEnabled = true;
 
             lsbRelevantLinks.Items.Clear();
+            lsbAllLinks.Items.Clear();
+            lsbVisitedSites.Items.Clear();
+            lsbFoundDinos.Items.Clear();
+
             lsbRelevantLinks.Items.Add(txtUri.Text);
 
             while (lsbRelevantLinks.Items.Count > 0 && !_cancel) {
@@ -59,17 +64,13 @@ namespace DinoCrawlerWebClient {
             }
             lblAllLinksCounter.Content = lsbAllLinks.Items.Count;
 
-            IList<string> filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks, _visitedSites);
+            IList<string> filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks.ToList(), _visitedSites, uriAsString);
             foreach (string filterdLink in filterdLinks) {
-                if (!filterdLink.EndsWith(".png") &&
-                    !filterdLink.EndsWith(".jpg") &&
-                    !filterdLink.EndsWith(".jpeg")) {
-                    lsbRelevantLinks.Items.Add(filterdLink);
-                }
+                lsbRelevantLinks.Items.Add(filterdLink);
             }
             lblRelevantLinksCounter.Content = lsbRelevantLinks.Items.Count;
 
-            IList<string> foundDinos = _linkFinder.ExtractDinos(uri, filterdLinks);
+            IList<string> foundDinos = _linkFinder.ExtractDinos(uri, allLinks);
             foreach (string foundDino in foundDinos) {
                 lsbFoundDinos.Items.Add(foundDino);
             }
