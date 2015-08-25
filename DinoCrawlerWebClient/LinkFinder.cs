@@ -16,10 +16,10 @@ namespace DinoCrawlerWebClient {
         //private static readonly Regex RelativeLinkParser = new Regex(@"<a\s*.*href=\S(/|.)*\S>\s*</a>",
         //    RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex RelativeLinkParser1 = new Regex("\\shref=\"(/|.)*\">",
+        private static readonly Regex RelativeLinkParser1 = new Regex("\\shref=\"(/|\\S)*\">",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex RelativeLinkParser2 = new Regex("\\shref='(/|.)*'>",
+        private static readonly Regex RelativeLinkParser2 = new Regex("\\shref='(/|\\S)*'>",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex DinoHtmlImgSrcParser = new Regex(@"<img\s*src\s*=\s*\S/images/14082015/1-\d{2}.png\S\s*/>", 
@@ -37,9 +37,9 @@ namespace DinoCrawlerWebClient {
         public IList<string> GetAllLinks(string htmlContent, string rootUri) {
             var tokens = htmlContent
                 .Trim()
-                //.Replace("\r", "")
-                //.Replace("\n", "")
-                .Split('\n');
+                .Replace("\r", "")
+                .Replace("\n", "")
+                .Split('<');
 
             List<string> resultList = new List<string>();
 

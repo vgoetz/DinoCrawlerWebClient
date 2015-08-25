@@ -44,6 +44,8 @@ namespace DinoCrawlerWebClient {
         private async Task RunCrawler(string uriAsString) {
             Uri uri;
             try {
+                uriAsString = uriAsString.Replace("http:www.", "http://www.");
+                uriAsString = uriAsString.Replace("https:www.", "https://www.");
                 uri = new Uri(uriAsString);
             } catch (Exception e) {
                 Console.WriteLine("Can´t convert '{0}' to a valid Uri: {1}", uriAsString, e.Message);

@@ -25,6 +25,7 @@ namespace DinoCrawlerWebClient {
                   "<sup><a href='#note2' class='quietLink'>**</a>", Result = 1)]
         [TestCase("website and <img src='/images/14082015/1-3.png' />look something like this &mdash; <img src='/images/14082015/1-39.png' /><sup><a href='#note2' class='quietLink'>**</a>", Result = 1)]
         [TestCase("website and look something like this &mdas<img src='/images/14082015/1-39.jpg' />h; <img src='/images/14082015/1-39.png' /><sup><a href='#note2' class='quietLink'>**</a>", Result = 1)]
+        [TestCase("website and look something like this &mdas<img src='/images/14082015/1-39.jpg' />h; <img src='/images/14082015/1-14.png' /><sup><a href='#note2' class='quietLink'>**</a>", Result = 1)]
         public int TestSearchForDinosAndFindOne(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
             var result = _linkFinder.ExtractDinos(htmlContent);
