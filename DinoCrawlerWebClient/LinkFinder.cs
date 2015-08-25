@@ -10,7 +10,7 @@ namespace DinoCrawlerWebClient {
 
         private static readonly string DevArtRootUri = "https://www.devart.com";
 
-        private static readonly Regex AbsoluteLinkParser = new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?", 
+        private static readonly Regex AbsoluteLinkParser = new Regex(@"http(s)?://([\w-]+\.)+[\w-]+(/[\w-./?%&=]*)?", 
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         //private static readonly Regex RelativeLinkParser = new Regex(@"<a\s*.*href=\S(/|.)*\S>\s*</a>",
@@ -34,40 +34,44 @@ namespace DinoCrawlerWebClient {
 
         };
 
-        public IList<string> GetAllLinks(string htmlContent) {
+        public IList<string> GetAllLinks(string htmlContent, string rootUri) {
             var tokens = htmlContent
                 .Trim()
                 //.Replace("\r", "")
                 //.Replace("\n", "")
                 .Split('\n');
 
-            List<string> list = new List<string>();
+            List<string> resultList = new List<string>();
 
             foreach (string token in tokens) {
                 foreach (Match link in AbsoluteLinkParser.Matches(token)) {
-                    list.Add(link.Value);
+                    resultList.Add(link.Value);
                 }
             }
 
             foreach (string token in tokens) {
                 foreach (Match link in RelativeLinkParser1.Matches(token)) {
+                    ParseRelativeLink(link, rootUri, resultList);
+                }
 
-                    var relativeLink = link.Value.Replace("href=", "").Replace("\"", "").Replace("'", "").Replace(">", "").Trim();
-
-                    if (!relativeLink.Contains("http://") &&
-                        !relativeLink.Contains("www.")) {
-                        var uriToBuild = DevArtRootUri + relativeLink;
-                        list.Add(uriToBuild);
-
-                    } else {
-                        list.Add(relativeLink);
-                    }
-
-
+                foreach (Match link in RelativeLinkParser2.Matches(token)) {
+                    ParseRelativeLink(link, rootUri, resultList);
                 }
             }
-            
-            return list;
+
+            return resultList;
+        }
+
+        private static void ParseRelativeLink(Match link, string rootUri, List<string> resultList) {
+            var relativeLink = link.Value.Replace("href=", "").Replace("\"", "").Replace("'", "").Replace(">", "").Trim();
+
+            if (!relativeLink.Contains("http://") &&
+                !relativeLink.Contains("www.")) {
+                var uriToBuild = rootUri + relativeLink;
+                resultList.Add(uriToBuild);
+            } else {
+                resultList.Add(relativeLink);
+            }
         }
 
         public IList<string> GetFilteredLinksToVisit(IList<string> linksToFilter, IList<string> visitedLinks, string rootUri, bool onlyRootLinks = true) {

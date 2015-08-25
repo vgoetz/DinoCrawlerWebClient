@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace DinoCrawlerWebClient {
-    public class DinoExtractTests {
+    public class TestDinoExtract {
 
         private LinkFinder _linkFinder;
 

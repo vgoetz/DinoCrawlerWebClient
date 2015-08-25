@@ -72,7 +72,7 @@ namespace DinoCrawlerWebClient {
             lblVisitedSitesCounter.Content = lsbVisitedSites.Items.Count;
             txtHtmlResult.Text = htmlResult;
 
-            IList<string> allLinks = _linkFinder.GetAllLinks(htmlResult);
+            IList<string> allLinks = _linkFinder.GetAllLinks(htmlResult, uri.AbsoluteUri.Replace(uri.AbsolutePath, ""));
             lsbAllLinks.Items.Clear();
             foreach (string linkText in allLinks) {
                 lsbAllLinks.Items.Add(linkText);

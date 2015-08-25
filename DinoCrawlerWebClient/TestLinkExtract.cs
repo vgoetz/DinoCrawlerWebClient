@@ -1,8 +1,9 @@
 using System;
+using System.Linq;
 using NUnit.Framework;
 
 namespace DinoCrawlerWebClient {
-    public class LinkExtractTests {
+    public class TestLinkExtract {
 
         private LinkFinder _linkFinder;
 
@@ -11,19 +12,25 @@ namespace DinoCrawlerWebClient {
             _linkFinder = new LinkFinder();
         }
 
-        [TestCase("<a href='www.de/de/news/2015/dino-hunt.html'></a>", Result = 0)]
-        [TestCase("<a id='bla' href='http://www.da.de/de/news/2015/dino-hunt.html'></a>", Result = 0)]
-        public int TestSearchForRelativeLinksWithoutResults(string htmlContent) {
+        [TestCase("<a href='de/news/2015/dino-hunt.html'></a>", "http://www.devart.com/", Result = "http://www.devart.com/de/news/2015/dino-hunt.html")]
+        [TestCase("<a id='bla' href='de/news/2015/dino-hunt.html'></a>", "http://www.devart.com/", Result = "http://www.devart.com/de/news/2015/dino-hunt.html")]
+        public string TestSearchForRelativeLinkAndGetAbsoluteLink(string htmlContent, string rootUri) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
-            var result = _linkFinder.GetAllLinks(htmlContent);
-            return (result.Count);
+            var result = _linkFinder.GetAllLinks(htmlContent, rootUri);
+            foreach (string r in result) {
+                Console.WriteLine("Found: {0}", r);
+            }
+            return (result.FirstOrDefault());
         }
 
         [TestCase("<a href='/de/news/2015/dino-hunt.html'></a>", Result = 1)]
         [TestCase("<a id='bla' href='/de/news/2015/dino-hunt.html'></a>", Result = 1)]
         public int TestSearchForRelativeLinks(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
-            var result = _linkFinder.GetAllLinks(htmlContent);
+            var result = _linkFinder.GetAllLinks(htmlContent, null);
+            foreach (string r in result) {
+                Console.WriteLine("Found: {0}", r);
+            }
             return (result.Count);
         }
 
@@ -57,7 +64,7 @@ namespace DinoCrawlerWebClient {
         [TestCase("http://www. de.de", Result = 0)]
         public int TestSearchForLinksWithoutMatches(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
-            var result = _linkFinder.GetAllLinks(htmlContent);
+            var result = _linkFinder.GetAllLinks(htmlContent, null);
             return (result.Count);
         }
 
@@ -83,7 +90,7 @@ namespace DinoCrawlerWebClient {
         [TestCase("123 www .de a http://www.de.de/bla/www.dehttp://www.de bcd <>", Result = 1)]
         public int TestSearchForLinksWith1Match(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
-            var result = _linkFinder.GetAllLinks(htmlContent);
+            var result = _linkFinder.GetAllLinks(htmlContent, null);
             return (result.Count);
         }
 
@@ -95,7 +102,7 @@ namespace DinoCrawlerWebClient {
         [TestCase("123 www .de a http://www.de.de/bla/www.dehttp://www.de bcd <>", Result = 1)]
         public int TestSearchHavingLinebreaksForLinksWith1Match(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
-            var result = _linkFinder.GetAllLinks(htmlContent);
+            var result = _linkFinder.GetAllLinks(htmlContent, null);
             return (result.Count);
         }
 
@@ -112,12 +119,15 @@ namespace DinoCrawlerWebClient {
         [TestCase("aaa http://www.de.de/bla/ asdf asdfasd ://: http asdfasdf334534 http://www.de.de ", Result = 2)]
         [TestCase("aaa http://www.de.de/bla/ asdf asdfasd \n http asdfasdf334534 http://www.de.de ", Result = 2)]
         [TestCase("aaa http://www.de.de/bla/ asdf asdfasd \n\r http asdfasdf334534 http://www.de.de ", Result = 2)]
-        [TestCase("aaa http://www.de.de/bla/ asdf asdfasd  http asdfasdf334534 http:\n//www.de.de ", Result = 2)]
-        [TestCase("aaa http://www.de.de/bla/ asdf asdfasd  http asdfasdf334534 http:\n\r//www.de.de ", Result = 2)]
-        [TestCase("aaa http://www.de.de/bla/ asdf asdfasd  http asdfasdf334534 http:\r//www.de.de ", Result = 2)]
+        //[TestCase("aaa http://www.de.de/bla/ asdf asdfasd  http asdfasdf334534 http:\n//www.de.de ", Result = 2)]
+        //[TestCase("aaa http://www.de.de/bla/ asdf asdfasd  http asdfasdf334534 http:\n\r//www.de.de ", Result = 2)]
+        //[TestCase("aaa http://www.de.de/bla/ asdf asdfasd  http asdfasdf334534 http:\r//www.de.de ", Result = 2)]
         public int TestSearchForLinksWith2Matches(string htmlContent) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
-            var result = _linkFinder.GetAllLinks(htmlContent);
+            var result = _linkFinder.GetAllLinks(htmlContent, null);
+            foreach (string r in result) {
+                Console.WriteLine("Found: {0}", r);
+            }
             return (result.Count);
         }
     }
