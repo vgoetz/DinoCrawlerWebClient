@@ -16,10 +16,10 @@ namespace DinoCrawlerWebClient {
         //private static readonly Regex RelativeLinkParser = new Regex(@"<a\s*.*href=\S(/|.)*\S>\s*</a>",
         //    RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex RelativeLinkParser1 = new Regex("\\shref=\"(/|.)*\">",
+        private static readonly Regex RelativeLinkParser1 = new Regex("\\shref=\"(/|\\S)*\"(\\s|>)+",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex RelativeLinkParser2 = new Regex("\\shref='(/|.)*'>",
+        private static readonly Regex RelativeLinkParser2 = new Regex("\\shref='(/|\\S)*'(\\s|>)+",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex DinoHtmlImgSrcParser = new Regex(@"<img\s*src\s*=\s*\S/images/14082015/1-\d{2}.png\S\s*/>", 
@@ -123,7 +123,7 @@ namespace DinoCrawlerWebClient {
 
         public Uri GetDinoUriFromHtmlImgSrc(string htmlImgSrc) {
             var uriToBuild = DevArtRootUri + DinoImgSrcParser.Match(htmlImgSrc).Value;
-
+            
             try {
                 return new Uri(uriToBuild);
             } catch (Exception e) {

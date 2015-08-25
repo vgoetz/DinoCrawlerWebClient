@@ -14,6 +14,11 @@ namespace DinoCrawlerWebClient {
 
         [TestCase("<a href='de/news/2015/dino-hunt.html'></a>", "http://www.devart.com/", Result = "http://www.devart.com/de/news/2015/dino-hunt.html")]
         [TestCase("<a id='bla' href='de/news/2015/dino-hunt.html'></a>", "http://www.devart.com/", Result = "http://www.devart.com/de/news/2015/dino-hunt.html")]
+        [TestCase("<a id='bla' href='de/news/2015/dino-hunt.html' bla=\"asd\"></a>", "http://www.devart.com/", Result = "http://www.devart.com/de/news/2015/dino-hunt.html")]
+
+        [TestCase("<a id='bla' href='de/news/2015/dino-hunt.html' bla='asd'></a>", "http://www.devart.com/", Result = "http://www.devart.com/de/news/2015/dino-hunt.html")]
+        [TestCase("<a id=\"bla\" href=\"favicon.ico\" type=\"image/x-icon\" bla=\"asd\"></a>", "http://www.devart.com/", Result = "http://www.devart.com/favicon.ico")]
+        [TestCase("<a id='bla' href='favicon.ico' type='image/x-icon' bla='asd'></a>", "http://www.devart.com/", Result = "http://www.devart.com/favicon.ico")]
         public string TestSearchForRelativeLinkAndGetAbsoluteLink(string htmlContent, string rootUri) {
             Console.WriteLine(@"Input: '{0}'", htmlContent);
             var result = _linkFinder.GetAllLinks(htmlContent, rootUri);
