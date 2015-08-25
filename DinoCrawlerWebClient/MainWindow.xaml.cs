@@ -42,6 +42,8 @@ namespace DinoCrawlerWebClient {
         }
 
         private async Task RunCrawler(string uriAsString) {
+            lsbRelevantLinks.Items.RemoveAt(0);
+
             Uri uri;
             try {
                 uriAsString = uriAsString.Replace("http:www.", "http://www.");
@@ -52,7 +54,7 @@ namespace DinoCrawlerWebClient {
                 return;
             }
 
-            lsbRelevantLinks.Items.RemoveAt(0);
+            
 
             if (_visitedSites.Contains(uriAsString)) {
                 return;
@@ -81,7 +83,7 @@ namespace DinoCrawlerWebClient {
             }
             lblAllLinksCounter.Content = lsbAllLinks.Items.Count;
 
-            IList<string> filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks.ToList(), _visitedSites, uriAsString);
+            IList<string> filterdLinks = _linkFinder.GetFilteredLinksToVisit(allLinks.ToList(), _visitedSites);
             foreach (string filterdLink in filterdLinks) {
                 lsbRelevantLinks.Items.Add(filterdLink);
             }
@@ -89,6 +91,10 @@ namespace DinoCrawlerWebClient {
 
             IList<string> foundDinos = _linkFinder.ExtractDinos(htmlResult);
             foreach (string foundDino in foundDinos) {
+                if (lsbFoundDinos.Items.Contains(foundDino)) {
+                    continue;
+                }
+
                 lsbFoundDinos.Items.Add(foundDino);
 
                 try {
