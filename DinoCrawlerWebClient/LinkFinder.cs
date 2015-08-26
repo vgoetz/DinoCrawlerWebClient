@@ -16,13 +16,13 @@ namespace DinoCrawlerWebClient {
         //private static readonly Regex RelativeLinkParser = new Regex(@"<a\s*.*href=\S(/|.)*\S>\s*</a>",
         //    RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex RelativeLinkParser1 = new Regex("\\shref=\"(/|\\S)*\"(\\s|>)+",
+        private static readonly Regex RelativeLinkParser1 = new Regex("\\shref=\"(/|\\S)*\"",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex RelativeLinkParser2 = new Regex("\\shref='(/|\\S)*'(\\s|>)+",
+        private static readonly Regex RelativeLinkParser2 = new Regex("\\shref='(/|\\S)*'",
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static readonly Regex DinoHtmlImgSrcParser = new Regex(@"<img\s*src\s*=\s*\S/images/14082015/1-\d{2}.png\S\s*/>", 
+        private static readonly Regex DinoHtmlImgSrcParser = new Regex(@"<img\s*src\s*=\s*\S/images/14082015/1-\d{2}.png\S", 
             RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex DinoImgSrcParser = new Regex(@"/images/14082015/1-\d{2}.png",
@@ -37,9 +37,9 @@ namespace DinoCrawlerWebClient {
         public IList<string> GetAllLinks(string htmlContent, string rootUri) {
             var tokens = htmlContent
                 .Trim()
-                //.Replace("\r", "")
-                //.Replace("\n", "")
-                .Split('\n');
+                .Replace("\r", "")
+                .Replace("\n", "")
+                .Split('<');
 
             List<string> resultList = new List<string>();
 
@@ -47,9 +47,7 @@ namespace DinoCrawlerWebClient {
                 foreach (Match link in AbsoluteLinkParser.Matches(token)) {
                     resultList.Add(link.Value);
                 }
-            }
 
-            foreach (string token in tokens) {
                 foreach (Match link in RelativeLinkParser1.Matches(token)) {
                     ParseRelativeLink(link, rootUri, resultList);
                 }
@@ -65,6 +63,10 @@ namespace DinoCrawlerWebClient {
         private static void ParseRelativeLink(Match link, string rootUri, List<string> resultList) {
             var relativeLink = link.Value.Replace("href=", "").Replace("\"", "").Replace("'", "").Replace(">", "").Trim();
 
+            if (link.Value.Contains("javascript:")) {
+                return;
+            }
+
             if (!relativeLink.Contains("http://") &&
                 !relativeLink.Contains("www.")) {
                 var uriToBuild = rootUri + relativeLink;
@@ -74,18 +76,18 @@ namespace DinoCrawlerWebClient {
             }
         }
 
-        public IList<string> GetFilteredLinksToVisit(IList<string> linksToFilter, IList<string> visitedLinks, string rootUri, bool onlyRootLinks = true) {
+        public IList<string> GetFilteredLinksToVisit(IList<string> linksToFilter, IList<string> visitedLinks, bool onlyRootLinks = true) {
             foreach (string visitedLink in visitedLinks) {
                 linksToFilter.Remove(visitedLink);
             }
 
-            var rootUriWithoutHttpPrefix = rootUri.Replace("http://www", "");
-            rootUriWithoutHttpPrefix = rootUriWithoutHttpPrefix.Replace("https://www", "");
+            //var rootUriWithoutHttpPrefix = rootUri.Replace("http://www", "");
+            //rootUriWithoutHttpPrefix = rootUriWithoutHttpPrefix.Replace("https://www", "");
 
             IList<string> listToRemove = new List<string>();
             foreach (string link in linksToFilter) {
                 if (onlyRootLinks) {
-                    if (!link.Contains(rootUriWithoutHttpPrefix)) {
+                    if (!link.Contains("devart.com")) {
                         listToRemove.Add(link);
                     }
                 }
@@ -123,7 +125,7 @@ namespace DinoCrawlerWebClient {
 
         public Uri GetDinoUriFromHtmlImgSrc(string htmlImgSrc) {
             var uriToBuild = DevArtRootUri + DinoImgSrcParser.Match(htmlImgSrc).Value;
-            
+
             try {
                 return new Uri(uriToBuild);
             } catch (Exception e) {
